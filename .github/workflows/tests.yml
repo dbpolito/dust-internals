@@ -9,7 +9,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         php: ['7.3', '7.4', '8.0']
-        dependency-version: [prefer-lowest, prefer-stable]
+        # dependency-version: [prefer-lowest, prefer-stable]
+        dependency-version: [prefer-stable]
 
     name: PHP ${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
 
@@ -17,21 +18,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup PHP Prefer Lowest
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php }}
-        tools: composer:v1
-        coverage: none
-      if: "matrix.dependency-version == 'prefer-lowest'"
-
-    - name: Setup PHP Prefer Stable
+    - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
         tools: composer:v2
         coverage: none
-      if: "matrix.dependency-version == 'prefer-stable'"
 
     - name: Setup Problem Matches
       run: |
@@ -43,7 +35,7 @@ jobs:
       if: "matrix.php < 8"
 
     - name: Install PHP 8 dependencies
-      run: composer update --${{ matrix.dependency-version }} --no-interaction --no-progress
+      run: composer update --${{ matrix.dependency-version }} --ignore-platform-req=php --no-interaction --no-progress
       if: "matrix.php >= 8"
 
     - name: Dust Update
