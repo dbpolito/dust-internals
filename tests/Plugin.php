@@ -7,4 +7,4 @@ it('has installation')
     ->clickLink('Get started')
     ->assertSee('composer require pestphp/pest');
 
-// browse('/')->assertSee('Get started');
+browse('/')->assertSee('Get started');

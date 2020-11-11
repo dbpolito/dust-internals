@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dust;
 
+use Closure;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -77,13 +78,13 @@ class TestCase extends DuskTestCase
     }
 
     /**
-     * @param \Closure|Page|string $route
+     * @param Closure|Page|string $route
      *
      * @return Browser|void
      */
     public function browse($route)
     {
-        if ($route instanceof \Closure) {
+        if ($route instanceof Closure) {
             return parent::browse($route);
         }
 
@@ -104,20 +105,30 @@ class TestCase extends DuskTestCase
      */
     protected function driver()
     {
-        $options = (new ChromeOptions())->addArguments(
-            [
-                '--disable-gpu',
-                '--headless',
-            ]
-        );
+        $options = (new ChromeOptions())->addArguments([
+            '--disable-gpu',
+            '--headless',
+            '--window-size=1920,1080',
+        ]);
 
         return RemoteWebDriver::create(
             'http://localhost:9515',
-            DesiredCapabilities::chrome()
-                ->setCapability(
-                    ChromeOptions::CAPABILITY,
-                    $options
-                )
+            DesiredCapabilities::chrome()->setCapability(
+                ChromeOptions::CAPABILITY,
+                $options
+            )
         );
+    }
+
+    /**
+     * Prepare for Dusk test execution.
+     *
+     * @beforeClass
+     *
+     * @return void
+     */
+    public static function prepare()
+    {
+        static::startChromeDriver();
     }
 }

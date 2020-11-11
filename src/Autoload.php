@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Dust;
 
 use Laravel\Dusk\Browser;
